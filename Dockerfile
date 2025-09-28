@@ -23,10 +23,16 @@ RUN mkdir -p /var/log/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
     chmod -R 755 /var/log/nginx
 
-# Create cache directory for NGINX
-RUN mkdir -p /var/cache/nginx && \
+# Create cache directories for NGINX in /tmp
+RUN mkdir -p /tmp/nginx_client_temp && \
+    mkdir -p /tmp/nginx_proxy_temp && \
+    mkdir -p /tmp/nginx_fastcgi_temp && \
+    mkdir -p /tmp/nginx_scgi_temp && \
+    mkdir -p /tmp/nginx_uwsgi_temp && \
+    mkdir -p /var/cache/nginx && \
     chown -R nginx:nginx /var/cache/nginx && \
-    chmod -R 755 /var/cache/nginx
+    chmod -R 755 /var/cache/nginx && \
+    chmod -R 755 /tmp/nginx_*
 
 # Test NGINX configuration during build
 RUN nginx -t
@@ -37,6 +43,7 @@ RUN addgroup -g 1001 nginxuser && \
 
 # Set proper ownership for NGINX directories
 RUN chown -R nginxuser:nginxuser /var/cache/nginx && \
+    chown -R nginxuser:nginxuser /tmp/nginx_* && \
     chown -R nginxuser:nginxuser /var/log/nginx && \
     chown -R nginxuser:nginxuser /etc/nginx/
 
